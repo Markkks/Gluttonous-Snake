@@ -7,4 +7,8 @@ import App from './App.vue';
 
 const app = createApp(App);
 
+app.use(ElContainer);
+app.use(ElHeader);
+app.use(ElMain);
+app.use(ElButton);
 app.mount('#app');

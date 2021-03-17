@@ -1,34 +1,39 @@
 <template>
-    <div class="container">
-        <div class="game-panel">
-            <div
-                v-for="col in 1089"
-                :key="col"
-                :class="{
-                    'col-item': true,
-                    snake: isSnake(col),
-                    food: food === col,
-                    'snake-head': isHead(col)
-                }"
-            ></div>
-        </div>
-        <div class="source-wrap">得分： {{ snakeBody.length - 1 }}</div>
-        <div class="operation">
-            <div class="operation-item operation-top-down" @click="changeDirection('TOP')">UP</div>
-            <div class="operation-left-right-col">
-                <div class="operation-item" @click="changeDirection('LEFT')">LEFT</div>
-                <div class="operation-item" @click="changeDirection('RIGHT')">RIGHT</div>
+    <el-container>
+        <el-header>GLUTTONOUS 🐍</el-header>
+        <el-main>
+            <div class="game-panel">
+                <div
+                    v-for="col in 1089"
+                    :key="col"
+                    :class="{
+                        'col-item': true,
+                        snake: isSnake(col),
+                        food: food === col,
+                        'snake-head': isHead(col)
+                    }"
+                ></div>
             </div>
-            <div class="operation-item operation-top-down" @click="changeDirection('DOWN')">
-                DOWN
+            <div class="source-wrap">得分： {{ snakeBody.length - 1 }}</div>
+            <div class="operation">
+                <div class="operation-item operation-top-down" @click="changeDirection('TOP')">
+                    UP
+                </div>
+                <div class="operation-left-right-col">
+                    <div class="operation-item" @click="changeDirection('LEFT')">LEFT</div>
+                    <div class="operation-item" @click="changeDirection('RIGHT')">RIGHT</div>
+                </div>
+                <div class="operation-item operation-top-down" @click="changeDirection('DOWN')">
+                    DOWN
+                </div>
             </div>
-        </div>
+        </el-main>
         <div v-if="gameover" class="game-over">
             <span class="game-over-text">GAME OVER</span>
             <br />
-            <span class="restart" @click="restart">Restart</span>
+            <el-button @click="restart">RESTART</el-button>
         </div>
-    </div>
+    </el-container>
 </template>
 
 <script lang="ts">
@@ -161,13 +166,13 @@ export default defineComponent({
             }, this.speed);
         },
         keyUp(event: KeyboardEvent) {
-            if (event.code === '0xE04B') {
+            if (event.code === 'ArrowLeft') {
                 this.direction = 'LEFT';
-            } else if (event.code === '0xE048') {
+            } else if (event.code === 'ArrowUp') {
                 this.direction = 'TOP';
-            } else if (event.code === '0xE04D') {
+            } else if (event.code === 'ArrowRight') {
                 this.direction = 'RIGHT';
-            } else if (event.code === '0xE050') {
+            } else if (event.code === 'ArrowDown') {
                 this.direction = 'DOWN';
             }
         },
@@ -181,6 +186,25 @@ export default defineComponent({
 
 <style>
 /* 在这里写样式 */
+.el-container {
+    line-height: 30px;
+}
+.el-header {
+    background-color: #b3c0d1;
+    color: rgb(30, 83, 39);
+    text-align: center;
+    line-height: 60px;
+    font-size: 30px;
+    font-family: 'Helvetica Neue';
+}
+
+.el-main {
+    background-color: #e9eef3;
+    color: #333;
+    text-align: center;
+    line-height: 160px;
+}
+
 .game-panel {
     position: relative;
     width: 330px;
@@ -192,28 +216,28 @@ export default defineComponent({
 }
 
 .col-item {
-    background: #a5a5a5;
+    background: #3f4b5e;
     width: 10px;
     height: 10px;
     display: inline-block;
 }
 
 .snake {
-    background-color: #800000;
+    background-color: #44d368;
 }
 
 .snake-head {
-    background-color: rgb(9, 255, 0);
+    background-color: rgb(46, 255, 74);
 }
 
 .food {
-    background-color: rgb(112, 255, 255);
+    background-color: rgb(255, 112, 112);
 }
 
 .operation {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
+    bottom: 160px;
+    right: 70px;
     width: 150px;
     height: 190px;
     text-align: center;
@@ -235,9 +259,9 @@ export default defineComponent({
     border-radius: 30px;
 }
 .operation-top-down {
-    width: 40px;
-    height: 70px;
-    line-height: 70px;
+    width: 70px;
+    height: 40px;
+    line-height: 40px;
 }
 .game-over {
     position: fixed;
@@ -249,12 +273,15 @@ export default defineComponent({
 }
 .game-over-text {
     font-size: 20px;
-}
-.restart {
-    font-size: 15px;
-    color: red;
+    color: rgb(255, 0, 0);
 }
 .source-wrap {
-    padding-left: 50px;
+    margin: auto auto;
+    font-size: 20px;
+    color: rgb(30, 40, 97);
+}
+.el-button {
+    margin: auto;
+    color: rgb(250, 0, 0);
 }
 </style>

@@ -25,6 +25,14 @@ module.exports = {
             }
         ],
 
+        'vue/no-duplicate-attributes': [
+            'error', 
+            {
+            'allowCoexistClass': true,
+            'allowCoexistStyle': true
+            }
+        ],
+
         'no-return-assign': 'off',
         'prefer-promise-reject-errors': 'off',
         '@typescript-eslint/no-loss-of-precision': 'off',
