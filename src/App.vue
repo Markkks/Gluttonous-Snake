@@ -39,19 +39,18 @@
 <script lang="ts">
 // 在这里写JS/TS代码（逻辑）
 import { defineComponent } from 'vue';
-import _ from 'underscore';
 
 export default defineComponent({
     name: 'App',
     data() {
-        const intId: NodeJS.Timeout = setInterval(() => {}, 1000);
+        // const intId: NodeJS.Timeout = setInterval(() => {}, 1000);
         return {
             snakeBody: [1],
             food: 0,
             direction: 'RIGHT',
             gameover: false,
             speed: 400,
-            intId
+            intId: (1000 as unknown) as NodeJS.Timeout
         };
     },
     watch: {
@@ -67,11 +66,11 @@ export default defineComponent({
     },
     methods: {
         checkRule() {
-            let uniqBady = _.uniq(this.snakeBody);
-            if (uniqBady.length !== this.snakeBody.length) {
+            let snakeBodySet = new Set(this.snakeBody);
+            if (snakeBodySet.size !== this.snakeBody.length) {
                 this.stop();
             } else {
-                switch (uniqBady.length) {
+                switch (snakeBodySet.size) {
                     case 3:
                         this.changeSpeed(300);
                         break;
@@ -106,10 +105,10 @@ export default defineComponent({
             this.gameover = true;
         },
         isSnake(col: number) {
-            return _.indexOf(this.snakeBody, col) > -1;
+            return this.snakeBody.includes(col);
         },
         isHead(col: number) {
-            return _.last(this.snakeBody) === col;
+            return this.snakeBody[this.snakeBody.length - 1] === col;
         },
         changeDirection(direction: string) {
             this.direction = direction;
@@ -127,15 +126,15 @@ export default defineComponent({
         },
         move() {
             this.intId = setInterval(() => {
-                const last: number | undefined = _.last(this.snakeBody);
+                const last: number | undefined = this.snakeBody[this.snakeBody.length - 1];
                 let newBody = [];
                 if (last === undefined) {
                     newBody = this.snakeBody;
                 } else if (last === this.food) {
                     newBody = this.snakeBody;
-                    this.food = _.random(1, 1089);
+                    this.food = Math.floor(Math.random() * 1089) + 1;
                 } else {
-                    newBody = _.rest(this.snakeBody);
+                    newBody = this.snakeBody.slice(1, this.snakeBody.length);
                 }
                 if (last === undefined) {
                     newBody = this.snakeBody;
@@ -177,7 +176,7 @@ export default defineComponent({
             }
         },
         init() {
-            this.food = _.random(1, 1089);
+            this.food = Math.floor(Math.random() * 1089) + 1;
             this.move();
         }
     }
