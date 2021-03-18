@@ -28,7 +28,7 @@
                 </div>
             </div>
         </el-main>
-        <div v-if="gameover" class="game-over">
+        <div v-if="isGameover" class="game-over">
             <span class="game-over-text">GAME OVER</span>
             <br />
             <el-button @click="restart">RESTART</el-button>
@@ -48,24 +48,13 @@ export default defineComponent({
             snakeBody: [1],
             food: 0,
             direction: 'RIGHT',
-            gameover: false,
+            isGameover: false,
             speed: 400,
             intId: (1000 as unknown) as NodeJS.Timeout
         };
     },
     watch: {
-        snakeBody: 'checkRule'
-    },
-    created() {
-        this.init();
-    },
-    mounted() {
-        document.onkeydown = (event) => {
-            this.keyUp(event);
-        };
-    },
-    methods: {
-        checkRule() {
+        snakeBody: function() {
             let snakeBodySet = new Set(this.snakeBody);
             if (snakeBodySet.size !== this.snakeBody.length) {
                 this.stop();
@@ -87,7 +76,17 @@ export default defineComponent({
                         break;
                 }
             }
-        },
+        }
+    },
+    created() {
+        this.init();
+    },
+    mounted() {
+        document.onkeydown = (event) => {
+            this.keyUp(event);
+        };
+    },
+    methods: {
         changeSpeed(speed: number) {
             clearInterval(this.intId);
             this.speed = speed;
@@ -96,13 +95,13 @@ export default defineComponent({
         restart() {
             this.snakeBody = [1];
             this.direction = 'RIGHT';
-            this.gameover = false;
+            this.isGameover = false;
             this.speed = 400;
             this.init();
         },
         stop() {
             clearInterval(this.intId);
-            this.gameover = true;
+            this.isGameover = true;
         },
         isSnake(col: number) {
             return this.snakeBody.includes(col);
@@ -111,18 +110,15 @@ export default defineComponent({
             return this.snakeBody[this.snakeBody.length - 1] === col;
         },
         changeDirection(direction: string) {
-            this.direction = direction;
-        },
-        touch(event: { clientY: number; clientX: number }) {
-            if (event.clientY < 168) {
-                this.direction = 'TOP';
-            } else if (event.clientY > 328 && event.clientY < 488) {
-                this.direction = 'DOWN';
-            } else if (event.clientX > window.innerWidth / 2) {
-                this.direction = 'RIGHT';
-            } else if (event.clientX < window.innerWidth / 2) {
-                this.direction = 'LEFT';
+            if (
+                (this.direction === 'RIGHT' && direction === 'LEFT') ||
+                (this.direction === 'LEFT' && direction === 'RIGHT') ||
+                (this.direction === 'TOP' && direction === 'DOWN') ||
+                (this.direction === 'DOWN' && direction === 'TOP')
+            ) {
+                return;
             }
+            this.direction = direction;
         },
         move() {
             this.intId = setInterval(() => {
@@ -166,13 +162,13 @@ export default defineComponent({
         },
         keyUp(event: KeyboardEvent) {
             if (event.code === 'ArrowLeft') {
-                this.direction = 'LEFT';
+                this.changeDirection('LEFT');
             } else if (event.code === 'ArrowUp') {
-                this.direction = 'TOP';
+                this.changeDirection('TOP');
             } else if (event.code === 'ArrowRight') {
-                this.direction = 'RIGHT';
+                this.changeDirection('RIGHT');
             } else if (event.code === 'ArrowDown') {
-                this.direction = 'DOWN';
+                this.changeDirection('DOWN');
             }
         },
         init() {
